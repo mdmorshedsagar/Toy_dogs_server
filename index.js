@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = "mongodb+srv://toyDogs:hFgT6SPhW19AmIip@cluster0.3uy5gri.mongodb.net/?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -39,13 +39,13 @@ async function run() {
           .toArray();
         res.send(data);
       });
-    app.get("/singleToy/:id", async (req, res) => {
-        
-        const data = await dbCollection.findOne({
-            _id: req.params.id,
-          })
-          
-        res.send(data);
+   
+      app.get("/singleToy/:id", async (req, res) => {
+       
+        const jobs = await dbCollection.findOne({
+          _id: new ObjectId(req.params.id),
+        });
+        res.send(jobs);
       });
     await client.db("admin").command({ ping: 1 });
   
