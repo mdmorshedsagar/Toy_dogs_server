@@ -36,7 +36,12 @@ async function run() {
       const cursor = toyCollection.find();
       const result = await cursor.toArray();
       res.send(result);
-  })
+  });
+  app.get('/singleToy/:id', async(req, res) => {
+    const id = req.params.id;
+    const result = await toyCollection.findOne({_id: new ObjectId(id)});
+    res.send(result);
+});
     
         app.post('/addToy', async (req, res) => {
             const newToy = req.body;
