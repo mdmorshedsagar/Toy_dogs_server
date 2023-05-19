@@ -32,6 +32,11 @@ async function run() {
     // Send a ping to confirm a successful connection
     const dbCollection = client.db("toyDogs").collection("subToyesData");
     const toyCollection = client.db("toyDogs").collection("ToyesData");
+    app.get('/allToys', async (req, res) => {
+      const cursor = toyCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+  })
     
         app.post('/addToy', async (req, res) => {
             const newToy = req.body;
@@ -48,6 +53,7 @@ async function run() {
           .toArray();
         res.send(data);
       });
+    
    
       app.get("/singleToy/:id", async (req, res) => {
        
