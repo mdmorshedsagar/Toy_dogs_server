@@ -30,6 +30,14 @@ async function run() {
     await client.connect();
     // Send a ping to confirm a successful connection
     const dbCollection = client.db("toyDogs").collection("subToyesData");
+    const toyCollection = client.db("toyDogs").collection("ToyesData");
+    
+        app.post('/addToy', async (req, res) => {
+            const newToy = req.body;
+            console.log(newToy);
+            const data = await toyCollection.insertOne(newToy);
+            res.send(data);
+        })
    
     app.get("/:category", async (req, res) => {
         
