@@ -60,7 +60,7 @@ async function run() {
       });
     
    
-      app.get("/singleToy/:id", async (req, res) => {
+      app.get("/singleSubToy/:id", async (req, res) => {
        
         const jobs = await dbCollection.findOne({
           _id: new ObjectId(req.params.id),
