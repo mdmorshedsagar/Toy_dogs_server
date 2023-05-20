@@ -56,7 +56,20 @@ async function run() {
         .toArray();
       res.send(result);
     });
-
+    const indexKeys = { name: 1 };
+    const indexOptions = { name: "Toy_name" };
+    const result = await toyCollection.createIndex(indexKeys, indexOptions);
+    
+    app.get("/getToysName/:searchToy", async (req, res) => {
+      const text = req.params.searchToy;
+      console.log(text); 
+      const result = await toyCollection
+        .find({
+          name: { $regex: text, $options: "i" }
+        })
+        .toArray();
+      res.send(result);
+    });
     app.post("/addToy", async (req, res) => {
       const newToy = req.body;
       console.log(newToy);
