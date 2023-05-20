@@ -33,8 +33,12 @@ async function run() {
     const dbCollection = client.db("toyDogs").collection("subToyesData");
     const toyCollection = client.db("toyDogs").collection("ToyesData");
     const toyGalley = client.db("toyDogs").collection("Gallery");
+    const indexKeys = { name: 1 };
+    const indexOptions = { name: "Toy_name" };
+    const result = await toyCollection.createIndex(indexKeys, indexOptions);
     app.get("/allToys", async (req, res) => {
-      const cursor = toyCollection.find();
+      const limit = 20; 
+      const cursor = toyCollection.find().limit(limit);
       const result = await cursor.toArray();
       res.send(result);
     });
@@ -53,12 +57,11 @@ async function run() {
         .find({
           email: req.params.email,
         })
+        .sort({ createdAt: -1 })
         .toArray();
       res.send(result);
     });
-    const indexKeys = { name: 1 };
-    const indexOptions = { name: "Toy_name" };
-    const result = await toyCollection.createIndex(indexKeys, indexOptions);
+    
     
     app.get("/getToysName/:searchToy", async (req, res) => {
       const text = req.params.searchToy;
@@ -72,7 +75,7 @@ async function run() {
     });
     app.post("/addToy", async (req, res) => {
       const newToy = req.body;
-      console.log(newToy);
+      newToy.createdAt = new Date();
       const data = await toyCollection.insertOne(newToy);
       res.send(data);
     });
