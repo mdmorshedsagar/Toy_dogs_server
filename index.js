@@ -22,13 +22,21 @@ const client = new MongoClient(uri, {
     strict: true,
     deprecationErrors: true,
   },
+  useNewUrlParser:true,
+  useUnifiedTopology:true,
+  maxPoolSize:10,
 });
 // toyDogs
 //hFgT6SPhW19AmIip
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    await client.connect(()=>{
+      if(err){
+        console.log(err);
+        return;
+      }
+    });
     // Send a ping to confirm a successful connection
     const dbCollection = client.db("toyDogs").collection("subToyesData");
     const toyCollection = client.db("toyDogs").collection("ToyesData");
