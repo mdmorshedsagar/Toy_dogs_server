@@ -22,9 +22,7 @@ const client = new MongoClient(uri, {
     strict: true,
     deprecationErrors: true,
   },
-  useNewUrlParser:true,
-  useUnifiedTopology:true,
-  maxPoolSize:10,
+
 });
 // toyDogs
 //hFgT6SPhW19AmIip
@@ -149,3 +147,4 @@ run().catch(console.dir);
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
