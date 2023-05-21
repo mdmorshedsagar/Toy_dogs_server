@@ -22,7 +22,6 @@ const client = new MongoClient(uri, {
     strict: true,
     deprecationErrors: true,
   },
-
 });
 
 async function run() {
