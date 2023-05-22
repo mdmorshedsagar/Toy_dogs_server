@@ -17,42 +17,36 @@ const uri = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASS}@cluster
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  maxPoolSize: 12,
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
 
 async function run() {
   try {
     const toyGalley = client.db("toyDogs").collection("Gallery");
-    const toyCollection = client.db("toyDogs").collection("ToyesData");
     const dbCollection = client.db("toyDogs").collection("subToyesData");
-
+    const toyCollection = client.db("toyDogs").collection("ToyesData");
+    
     const indexKeys = { name: 1 };
     const indexOptions = { name: "Toy_name" };
     const result = await toyCollection.createIndex(indexKeys, indexOptions);
+    app.get("/allToys", async (req, res) => {
+      const limit = 20; 
+      const cursor = toyCollection.find().limit(limit);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
     app.get("/gallery", async (req, res) => {
       const cursor = toyGalley.find();
       const result = await cursor.toArray();
       res.send(result);
     });
-    app.get("/:category", async (req, res) => {
-      const data = await dbCollection
-        .find({
-          category: req.params.category,
-        })
-        .toArray();
-      res.send(data);
-    });
-    app.get("/allToys", async (req, res) => {
-      const limit = 20;
-      const cursor = toyCollection.find().limit(limit);
-      const result = await cursor.toArray();
-      res.send(result);
-    });
-
     app.get("/singleToy/:id", async (req, res) => {
       const id = req.params.id;
       const result = await toyCollection.findOne({ _id: new ObjectId(id) });
@@ -67,12 +61,14 @@ async function run() {
         .toArray();
       res.send(result);
     });
+    
+    
     app.get("/getToysName/:searchToy", async (req, res) => {
       const text = req.params.searchToy;
-      console.log(text);
+      console.log(text); 
       const result = await toyCollection
         .find({
-          name: { $regex: text, $options: "i" },
+          name: { $regex: text, $options: "i" }
         })
         .toArray();
       res.send(result);
@@ -81,6 +77,15 @@ async function run() {
       const newToy = req.body;
       newToy.createdAt = new Date();
       const data = await toyCollection.insertOne(newToy);
+      res.send(data);
+    });
+
+    app.get("/:category", async (req, res) => {
+      const data = await dbCollection
+        .find({
+          category: req.params.category,
+        })
+        .toArray();
       res.send(data);
     });
 
@@ -96,36 +101,38 @@ async function run() {
       });
       res.send(jobs);
     });
-    app.put("/updateToy/:id", async (req, res) => {
+    app.put('/updateToy/:id', async(req, res) => {
       const id = req.params.id;
-      const ids = { _id: new ObjectId(id) };
+      const ids = {_id: new ObjectId(id)}
       const updatedToy = req.body;
       const options = { upsert: true };
 
       const Toy = {
-        $set: {
-          name: updatedToy.name,
-          picture: updatedToy.picture,
-          seller: updatedToy.seller,
-          email: updatedToy.email,
-          category: updatedToy.category,
-          price: updatedToy.price,
-          rating: updatedToy.rating,
-          quantity: updatedToy.quantity,
-          description: updatedToy.description,
-        },
-      };
+          $set: {
+               name: updatedToy.name,
+               picture: updatedToy.picture,
+               seller: updatedToy.seller,
+               email: updatedToy.email,
+               category: updatedToy.category,
+               price: updatedToy.price,
+               rating: updatedToy.rating,
+               quantity: updatedToy.quantity,
+               description: updatedToy.description
+          }
+      }
 
       const result = await toyCollection.updateOne(ids, Toy, options);
       res.send(result);
-    });
-    app.delete("/myToys/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await toyCollection.deleteOne(query);
-      res.send(result);
-    });
+  });
+      app.delete('/myToys/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await toyCollection.deleteOne(query);
+            res.send(result);
+        })
+   
   } finally {
+    
   }
 }
 run().catch(console.dir);
@@ -133,3 +140,4 @@ run().catch(console.dir);
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
