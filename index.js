@@ -127,7 +127,7 @@ async function run() {
             const result = await toyCollection.deleteOne(query);
             res.send(result);
         })
-    await client.db("admin").command({ ping: 1 });
+   
   } finally {
     
   }
