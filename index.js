@@ -21,15 +21,17 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  },
+  },       useNewUrlParser: true,
+  useUnifiedTopology:true,
+  maxPoolSize:12
 });
 
 async function run() {
   try {
-   
+    const toyGalley = client.db("toyDogs").collection("Gallery");
     const dbCollection = client.db("toyDogs").collection("subToyesData");
     const toyCollection = client.db("toyDogs").collection("ToyesData");
-    const toyGalley = client.db("toyDogs").collection("Gallery");
+    
     const indexKeys = { name: 1 };
     const indexOptions = { name: "Toy_name" };
     const result = await toyCollection.createIndex(indexKeys, indexOptions);
