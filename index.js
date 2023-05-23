@@ -17,9 +17,7 @@ const uri = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASS}@cluster
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  maxPoolSize: 12,
+  
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -35,7 +33,7 @@ async function run() {
     
     const indexKeys = { name: 1 };
     const indexOptions = { name: "Toy_name" };
-    const result = await toyCollection.createIndex(indexKeys, indexOptions);
+    const result = toyCollection.createIndex(indexKeys, indexOptions);
     app.get("/allToys", async (req, res) => {
       const limit = 20; 
       const cursor = toyCollection.find().limit(limit);
