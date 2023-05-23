@@ -30,8 +30,8 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const toyGalley = client.db("toyDogs").collection("Gallery");
-    const dbCollection = client.db("toyDogs").collection("subToyesData");
-    const toyCollection = client.db("toyDogs").collection("ToyesData");
+    const dbCollection = client.db("toyDogs").collection("sub_toy_data");
+    const toyCollection = client.db("toyDogs").collection("toy_data");
     
     const indexKeys = { name: 1 };
     const indexOptions = { name: "Toy_name" };
